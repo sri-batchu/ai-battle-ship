@@ -117,7 +117,7 @@ const Index = () => {
     });
 
     setTimeout(() => {
-      const [aiRow, aiCol] = getAIMove(gameState.playerBoard);
+      const [aiRow, aiCol] = getAIMove(newEnemyBoard);
       const { board: newPlayerBoard, result: aiResult } = makeAttack(
         gameState.playerBoard,
         aiRow,
@@ -127,22 +127,22 @@ const Index = () => {
       toast.info(aiResult === 'hit' ? '💥 Enemy hit your ship!' : '💧 Enemy missed!');
 
       if (checkAllShipsSunk(gameState.playerShips, newPlayerBoard)) {
-        setGameState({
-          ...gameState,
+        setGameState(prev => ({
+          ...prev,
           playerBoard: newPlayerBoard,
           enemyBoard: newEnemyBoard,
           phase: 'gameover',
           winner: 'enemy',
-        });
+        }));
         return;
       }
 
-      setGameState({
-        ...gameState,
+      setGameState(prev => ({
+        ...prev,
         playerBoard: newPlayerBoard,
         enemyBoard: newEnemyBoard,
         isPlayerTurn: true,
-      });
+      }));
     }, 1500);
   };
 
