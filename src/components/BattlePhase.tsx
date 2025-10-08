@@ -1,12 +1,14 @@
 import { Board } from '@/types/game';
 import { GameBoard } from '@/components/GameBoard';
-import { Crosshair, Shield } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Crosshair, Shield, RotateCcw } from 'lucide-react';
 
 interface BattlePhaseProps {
   playerBoard: Board;
   enemyBoard: Board;
   isPlayerTurn: boolean;
   onEnemyCellClick: (row: number, col: number) => void;
+  onRestart: () => void;
 }
 
 export const BattlePhase = ({
@@ -14,10 +16,11 @@ export const BattlePhase = ({
   enemyBoard,
   isPlayerTurn,
   onEnemyCellClick,
+  onRestart,
 }: BattlePhaseProps) => {
   return (
     <div className="flex flex-col items-center gap-8">
-      <div className="text-center space-y-2">
+      <div className="text-center space-y-3">
         <h2 className="text-3xl sm:text-4xl font-bold text-foreground">Battle Phase</h2>
         <div className="flex items-center justify-center gap-2 text-lg">
           {isPlayerTurn ? (
@@ -32,6 +35,10 @@ export const BattlePhase = ({
             </>
           )}
         </div>
+        <Button onClick={onRestart} variant="outline" size="sm" className="gap-2">
+          <RotateCcw className="w-4 h-4" />
+          Restart Game
+        </Button>
       </div>
 
       <div className="flex flex-col lg:flex-row gap-8 lg:gap-16 items-center lg:items-start">

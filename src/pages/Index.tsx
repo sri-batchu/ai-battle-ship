@@ -222,6 +222,7 @@ const Index = () => {
             enemyBoard={gameState.enemyBoard}
             isPlayerTurn={gameState.isPlayerTurn}
             onEnemyCellClick={handleEnemyAttack}
+            onRestart={handleRestart}
           />
         )}
 
