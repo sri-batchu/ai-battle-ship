@@ -87,6 +87,37 @@ const Index = () => {
     toast.success("Ships placed randomly! Battle begins!");
   };
 
+  const handleUndo = () => {
+    if (gameState.currentShip === 0) return;
+
+    const previousShipIndex = gameState.currentShip - 1;
+    const shipToRemove = gameState.playerShips[previousShipIndex];
+
+    // Create new board without the last placed ship
+    const newBoard = gameState.playerBoard.map(r => [...r]);
+    shipToRemove.positions.forEach(([row, col]) => {
+      newBoard[row][col] = 'empty';
+    });
+
+    // Update ships array
+    const newShips = [...gameState.playerShips];
+    newShips[previousShipIndex] = {
+      ...shipToRemove,
+      placed: false,
+      positions: [],
+    };
+
+    setGameState({
+      ...gameState,
+      playerBoard: newBoard,
+      playerShips: newShips,
+      currentShip: previousShipIndex,
+      phase: 'placement',
+    });
+
+    toast.info(`Removed ${shipToRemove.name}`);
+  };
+
   const handleEnemyAttack = (row: number, col: number) => {
     if (!gameState.isPlayerTurn || gameState.phase !== 'battle') return;
 
@@ -181,6 +212,7 @@ const Index = () => {
             onCellClick={handlePlacementClick}
             onOrientationToggle={handleOrientationToggle}
             onRandomPlacement={handleRandomPlacement}
+            onUndo={handleUndo}
           />
         )}
 

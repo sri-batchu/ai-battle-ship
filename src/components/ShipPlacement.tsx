@@ -2,7 +2,7 @@ import { Board, Ship } from '@/types/game';
 import { Button } from '@/components/ui/button';
 import { canPlaceShip, GRID_SIZE } from '@/utils/gameLogic';
 import { cn } from '@/lib/utils';
-import { RotateCw } from 'lucide-react';
+import { RotateCw, Undo } from 'lucide-react';
 
 interface ShipPlacementProps {
   board: Board;
@@ -12,6 +12,7 @@ interface ShipPlacementProps {
   onCellClick: (row: number, col: number) => void;
   onOrientationToggle: () => void;
   onRandomPlacement: () => void;
+  onUndo: () => void;
 }
 
 export const ShipPlacement = ({
@@ -22,6 +23,7 @@ export const ShipPlacement = ({
   onCellClick,
   onOrientationToggle,
   onRandomPlacement,
+  onUndo,
 }: ShipPlacementProps) => {
   const ship = ships[currentShip];
 
@@ -54,6 +56,10 @@ export const ShipPlacement = ({
         <Button onClick={onOrientationToggle} variant="outline" className="gap-2">
           <RotateCw className="w-4 h-4" />
           {orientation === 'horizontal' ? 'Horizontal' : 'Vertical'}
+        </Button>
+        <Button onClick={onUndo} variant="outline" className="gap-2" disabled={currentShip === 0}>
+          <Undo className="w-4 h-4" />
+          Undo
         </Button>
         <Button onClick={onRandomPlacement} variant="secondary">
           Auto-place Ships
