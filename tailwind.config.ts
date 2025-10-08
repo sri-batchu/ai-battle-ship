@@ -31,6 +31,10 @@ export default {
           DEFAULT: "hsl(var(--destructive))",
           foreground: "hsl(var(--destructive-foreground))",
         },
+        success: {
+          DEFAULT: "hsl(var(--success))",
+          foreground: "hsl(var(--success-foreground))",
+        },
         muted: {
           DEFAULT: "hsl(var(--muted))",
           foreground: "hsl(var(--muted-foreground))",
@@ -47,16 +51,30 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        sidebar: {
-          DEFAULT: "hsl(var(--sidebar-background))",
-          foreground: "hsl(var(--sidebar-foreground))",
-          primary: "hsl(var(--sidebar-primary))",
-          "primary-foreground": "hsl(var(--sidebar-primary-foreground))",
-          accent: "hsl(var(--sidebar-accent))",
-          "accent-foreground": "hsl(var(--sidebar-accent-foreground))",
-          border: "hsl(var(--sidebar-border))",
-          ring: "hsl(var(--sidebar-ring))",
+        ocean: {
+          deep: "hsl(var(--ocean-deep))",
+          primary: "hsl(var(--ocean-primary))",
+          light: "hsl(var(--ocean-light))",
+          surface: "hsl(var(--ocean-surface))",
         },
+        grid: {
+          cell: "hsl(var(--grid-cell))",
+          border: "hsl(var(--grid-border))",
+        },
+        ship: "hsl(var(--ship-color))",
+        hit: "hsl(var(--hit-color))",
+        miss: "hsl(var(--miss-color))",
+      },
+      backgroundImage: {
+        'gradient-ocean': 'var(--gradient-ocean)',
+        'gradient-wave': 'var(--gradient-wave)',
+      },
+      boxShadow: {
+        'ship': 'var(--shadow-ship)',
+        'glow': 'var(--shadow-glow)',
+      },
+      transitionProperty: {
+        'smooth': 'var(--transition-smooth)',
       },
       borderRadius: {
         lg: "var(--radius)",
