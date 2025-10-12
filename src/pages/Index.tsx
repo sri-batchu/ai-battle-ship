@@ -32,10 +32,19 @@ const Index = () => {
     };
   });
 
-  const handlePlacementClick = (row: number, col: number) => {
-    if (gameState.phase !== 'placement') return;
+  const [selectedShipIndex, setSelectedShipIndex] = useState<number | null>(0);
 
-    const ship = gameState.playerShips[gameState.currentShip];
+  const handleShipSelect = (index: number) => {
+    const ship = gameState.playerShips[index];
+    if (!ship.placed) {
+      setSelectedShipIndex(index);
+    }
+  };
+
+  const handlePlacementClick = (row: number, col: number) => {
+    if (gameState.phase !== 'placement' || selectedShipIndex === null) return;
+
+    const ship = gameState.playerShips[selectedShipIndex];
     if (!ship || ship.placed) return;
 
     if (!canPlaceShip(gameState.playerBoard, row, col, ship.length, gameState.shipOrientation)) {
@@ -52,20 +61,23 @@ const Index = () => {
     );
 
     const newShips = [...gameState.playerShips];
-    newShips[gameState.currentShip] = { ...ship, placed: true, positions };
+    newShips[selectedShipIndex] = { ...ship, placed: true, positions };
 
-    const nextShip = gameState.currentShip + 1;
+    // Find the next unplaced ship
+    const nextShipIndex = newShips.findIndex(s => !s.placed);
     
     setGameState({
       ...gameState,
       playerBoard: newBoard,
       playerShips: newShips,
-      currentShip: nextShip,
-      phase: nextShip >= gameState.playerShips.length ? 'battle' : 'placement',
+      currentShip: selectedShipIndex,
+      phase: nextShipIndex === -1 ? 'battle' : 'placement',
     });
 
-    if (nextShip >= gameState.playerShips.length) {
+    if (nextShipIndex === -1) {
       toast.success("All ships placed! Battle begins!");
+    } else {
+      setSelectedShipIndex(nextShipIndex);
     }
   };
 
@@ -88,10 +100,17 @@ const Index = () => {
   };
 
   const handleUndo = () => {
-    if (gameState.currentShip === 0) return;
+    // Find the last placed ship
+    const placedShips = gameState.playerShips.filter(ship => ship.placed);
+    if (placedShips.length === 0) return;
 
-    const previousShipIndex = gameState.currentShip - 1;
-    const shipToRemove = gameState.playerShips[previousShipIndex];
+    const lastPlacedShipIndex = gameState.playerShips.findIndex(ship => 
+      ship.placed && ship.positions.length > 0
+    );
+
+    if (lastPlacedShipIndex === -1) return;
+
+    const shipToRemove = gameState.playerShips[lastPlacedShipIndex];
 
     // Create new board without the last placed ship
     const newBoard = gameState.playerBoard.map(r => [...r]);
@@ -101,19 +120,21 @@ const Index = () => {
 
     // Update ships array
     const newShips = [...gameState.playerShips];
-    newShips[previousShipIndex] = {
+    newShips[lastPlacedShipIndex] = {
       ...shipToRemove,
       placed: false,
       positions: [],
     };
 
-    setGameState({
-      ...gameState,
+    // Update selectedShipIndex to the removed ship
+    setSelectedShipIndex(lastPlacedShipIndex);
+
+    setGameState(prevState => ({
+      ...prevState,
       playerBoard: newBoard,
       playerShips: newShips,
-      currentShip: previousShipIndex,
       phase: 'placement',
-    });
+    }));
 
     toast.info(`Removed ${shipToRemove.name}`);
   };
@@ -207,12 +228,13 @@ const Index = () => {
           <ShipPlacement
             board={gameState.playerBoard}
             ships={gameState.playerShips}
-            currentShip={gameState.currentShip}
+            currentShip={selectedShipIndex}
             orientation={gameState.shipOrientation}
             onCellClick={handlePlacementClick}
             onOrientationToggle={handleOrientationToggle}
             onRandomPlacement={handleRandomPlacement}
             onUndo={handleUndo}
+            onShipSelect={handleShipSelect}
           />
         )}
 
