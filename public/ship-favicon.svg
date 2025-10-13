@@ -1,6 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
-  <path d="M16 4a1 1 0 0 1 .5.15l12 7a1 1 0 0 1 0 1.7l-12 7a1 1 0 0 1-1 0l-12-7a1 1 0 0 1 0-1.7l12-7A1 1 0 0 1 16 4zm0 2.16L6.5 11 16 17.84 25.5 11 16 6.16z" fill="#1e40af"/>
-  <path d="M4 20v6l12 6 12-6v-6H4z" fill="#1e40af"/>
-  <path d="M4 26v2l12 6 12-6v-2l-12 6-12-6z" fill="#1d4ed8"/>
+  <!-- Ship hull -->
+  <path d="M6 20 L26 20 L24 24 L8 24 Z" fill="#1e40af" stroke="#1d4ed8" stroke-width="0.5"/>
+  
+  <!-- Ship deck -->
+  <path d="M8 16 L24 16 L24 20 L8 20 Z" fill="#3b82f6"/>
+  
+  <!-- Ship bridge -->
+  <path d="M12 12 L20 12 L20 16 L12 16 Z" fill="#1e40af"/>
+  
+  <!-- Ship mast -->
+  <path d="M15 8 L15 12 L17 12 L17 8 Z" fill="#1e40af"/>
+  
+  <!-- Ship flag -->
+  <path d="M17 8 L24 8 L24 10 L17 10 Z" fill="#dc2626"/>
+  
+  <!-- Water waves -->
+  <path d="M2 26 Q6 24 10 26 T18 26 T26 26 T32 26" stroke="#0ea5e9" stroke-width="1" fill="none"/>
+  <path d="M2 28 Q6 26 10 28 T18 28 T26 28 T32 28" stroke="#0ea5e9" stroke-width="1" fill="none"/>
 </svg>
