@@ -1,73 +1,106 @@
-# Welcome to your Lovable project
+# 🚢 AI Battleship Game
 
-## Project info
+A modern, interactive Battleship game built with React, TypeScript, and Tailwind CSS. Challenge the AI in this classic naval warfare strategy game!
 
-**URL**: https://lovable.dev/projects/5863975a-7551-4cb8-901e-290b38908e6a
+## 🎮 Game Features
 
-## How can I edit this code?
+- **Interactive Ship Placement**: Drag and drop or click to place your fleet
+- **Smart AI Opponent**: Computer-controlled enemy with strategic attack patterns
+- **Real-time Notifications**: Toast notifications in the top-right corner for game events
+- **Responsive Design**: Works seamlessly on desktop and mobile devices
+- **Modern UI**: Beautiful interface with smooth animations and transitions
 
-There are several ways of editing your application.
+## 🚀 How to Play
 
-**Use Lovable**
+1. **Ship Placement Phase**: Place your 5 ships on the grid
+   - Click on cells to place ships
+   - Toggle between horizontal and vertical orientation
+   - Use "Place Randomly" for quick setup
+   - Undo your last placement if needed
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/5863975a-7551-4cb8-901e-290b38908e6a) and start prompting.
+2. **Battle Phase**: Take turns attacking the enemy
+   - Click on enemy grid cells to attack
+   - Hit markers (🎯) show successful hits
+   - Miss markers (💦) show missed shots
+   - First to sink all enemy ships wins!
 
-Changes made via Lovable will be committed automatically to this repo.
+## 🛠️ Tech Stack
 
-**Use your preferred IDE**
+- **Frontend**: React 18 with TypeScript
+- **Build Tool**: Vite
+- **Styling**: Tailwind CSS
+- **UI Components**: shadcn/ui
+- **Notifications**: Sonner
+- **Icons**: Lucide React
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+## 🏃‍♂️ Getting Started
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+### Prerequisites
 
-Follow these steps:
+- Node.js (v16 or higher)
+- npm or yarn
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+### Installation
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+```bash
+# Clone the repository
+git clone <your-repo-url>
+cd ai-battle-ship
 
-# Step 3: Install the necessary dependencies.
-npm i
+# Install dependencies
+npm install
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+# Start the development server
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+Open [http://localhost:5173](http://localhost:5173) to view the game in your browser.
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## 🎯 Game Rules
 
-**Use GitHub Codespaces**
+- **Ship Types**: 5 ships of different lengths (5, 4, 3, 3, 2 cells)
+- **Placement**: Ships cannot overlap or be adjacent to each other
+- **Attacks**: Take turns firing at enemy coordinates
+- **Victory**: Sink all enemy ships before they sink yours!
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## 🎨 Features
 
-## What technologies are used for this project?
+- **Smart Notifications**: Game events appear as toast notifications in the top-right corner
+- **Visual Feedback**: Clear hit/miss indicators with emojis
+- **Responsive Layout**: Optimized for all screen sizes
+- **Smooth Animations**: Polished user experience with CSS transitions
+- **Accessibility**: Keyboard navigation and screen reader support
 
-This project is built with:
+## 🚀 Deployment
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+The game is ready to deploy to any static hosting service:
 
-## How can I deploy this project?
+- **Vercel**: Connect your GitHub repo for automatic deployments
+- **Netlify**: Drag and drop the `dist` folder after building
+- **GitHub Pages**: Enable Pages in repository settings
 
-Simply open [Lovable](https://lovable.dev/projects/5863975a-7551-4cb8-901e-290b38908e6a) and click on Share -> Publish.
+```bash
+# Build for production
+npm run build
 
-## Can I connect a custom domain to my Lovable project?
+# Preview production build
+npm run preview
+```
 
-Yes, you can!
+## 🤝 Contributing
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+Feel free to contribute to this project! Some ideas for improvements:
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+- Add multiplayer support
+- Implement different AI difficulty levels
+- Add sound effects and music
+- Create different ship types and special abilities
+- Add game statistics and leaderboards
+
+## 📝 License
+
+This project is open source and available under the [MIT License](LICENSE).
+
+---
+
+**Ready to command your fleet? Set sail and sink the enemy! ⚓**
