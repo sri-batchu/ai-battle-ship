@@ -104,3 +104,5 @@ This project is open source and available under the [MIT License](LICENSE).
 ---
 
 **Ready to command your fleet? Set sail and sink the enemy! ⚓**
+
+<!-- Verification test comment -->
