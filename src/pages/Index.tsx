@@ -14,9 +14,11 @@ import { ShipPlacement } from '@/components/ShipPlacement';
 import { BattlePhase } from '@/components/BattlePhase';
 import { GameOver } from '@/components/GameOver';
 import { toast } from 'sonner';
-import { Anchor } from 'lucide-react';
+import { Anchor, Home } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const Index = () => {
+  const navigate = useNavigate();
   const [gameState, setGameState] = useState<GameState>(() => {
     const { board: enemyBoard, ships: enemyShips } = placeShipsRandomly();
     return {
@@ -212,15 +214,28 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-ocean flex flex-col items-center justify-center p-4 sm:p-8">
-      <div className="max-w-7xl w-full">
-        <div className="text-center mb-8">
-          <div className="flex items-center justify-center gap-3 mb-2">
-            <Anchor className="w-10 h-10 text-primary" />
-            <h1 className="text-4xl sm:text-5xl font-bold text-foreground">Battleship</h1>
-          </div>
-          <p className="text-muted-foreground text-lg">Sink the enemy fleet!</p>
-        </div>
+    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-blue-100 p-4 sm:p-8">
+      <div className="max-w-6xl mx-auto">
+        <header className="text-center mb-8 relative">
+          <button 
+            onClick={() => navigate('/')}
+            className="absolute left-0 top-1/2 -translate-y-1/2 p-2 rounded-full hover:bg-blue-100 transition-colors"
+            aria-label="Return to home"
+          >
+            <Home className="w-6 h-6 text-blue-600" />
+          </button>
+          <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-2">
+            <Anchor className="inline-block mr-2" />
+            AI Battleship
+          </h1>
+          <p className="text-gray-600">
+            {gameState.phase === 'placement' 
+              ? 'Place your ships on the grid' 
+              : gameState.phase === 'battle'
+              ? 'Battle in progress!' 
+              : 'Game Over'}
+          </p>
+        </header>
 
         {gameState.phase === 'placement' && (
           <ShipPlacement
