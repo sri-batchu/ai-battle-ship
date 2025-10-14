@@ -212,19 +212,29 @@ const Index = () => {
   const handleRestart = () => {
     clearToasts();
     const { board: enemyBoard, ships: enemyShips } = placeShipsRandomly();
+    const initialShips = createInitialShips();
+    
     setGameState({
       phase: 'placement',
       playerBoard: createEmptyBoard(),
       enemyBoard,
-      playerShips: createInitialShips(),
+      playerShips: initialShips,
       enemyShips,
-      currentShip: 0,
+      currentShip: 0, // Explicitly set to 0 for Carrier
       shipOrientation: 'horizontal',
       isPlayerTurn: true,
       winner: null,
     });
+    
+    // Reset selected ship to Carrier
     setSelectedShipIndex(0);
-    showToast('New game started!');
+    
+    // Force a re-render of the ship selection
+    setTimeout(() => {
+      setSelectedShipIndex(0);
+    }, 0);
+    
+    showToast('New game started! Place your Carrier (5 cells)');
   };
 
   return (
