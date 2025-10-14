@@ -1,5 +1,4 @@
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
+import { Toaster } from "sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
@@ -12,17 +11,32 @@ const queryClient = new QueryClient();
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
-      <Toaster />
-      <Sonner 
+      <Toaster
         position="top-right"
         toastOptions={{
+          unstyled: false,
+          classNames: {
+            toast: 'group toast group-[.toaster]:bg-background group-[.toaster]:text-foreground group-[.toaster]:border-border group-[.toaster]:shadow-lg',
+            description: 'group-[.toast]:text-muted-foreground',
+            actionButton: 'group-[.toast]:bg-primary group-[.toast]:text-primary-foreground',
+            cancelButton: 'group-[.toast]:bg-muted group-[.toast]:text-muted-foreground',
+          },
           style: {
-            position: 'fixed',
-            top: '16px',
-            right: '16px',
+            minWidth: '280px',
+            maxWidth: '380px',
+            padding: '12px 16px',
+            borderRadius: '8px',
+            fontSize: '14px',
+            lineHeight: '1.5',
+            margin: '8px',
             zIndex: 9999,
           },
         }}
+        closeButton
+        visibleToasts={3}
+        richColors
+        theme="light"
+        gap={8}
       />
       <BrowserRouter>
         <Routes>

@@ -13,9 +13,9 @@ import {
 import { ShipPlacement } from '@/components/ShipPlacement';
 import { BattlePhase } from '@/components/BattlePhase';
 import { GameOver } from '@/components/GameOver';
-import { toast } from 'sonner';
 import { Anchor, Home } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { showToast, clearToasts } from '@/utils/toast';
 
 const Index = () => {
   const navigate = useNavigate();
@@ -50,36 +50,47 @@ const Index = () => {
     if (!ship || ship.placed) return;
 
     if (!canPlaceShip(gameState.playerBoard, row, col, ship.length, gameState.shipOrientation)) {
-      toast.error("Can't place ship here!");
+      showToast('Cannot place ship here');
       return;
     }
 
-    const { board: newBoard, positions } = placeShip(
-      gameState.playerBoard,
-      row,
-      col,
-      ship.length,
-      gameState.shipOrientation
-    );
-
+    const newBoard = [...gameState.playerBoard];
     const newShips = [...gameState.playerShips];
-    newShips[selectedShipIndex] = { ...ship, placed: true, positions };
+    const newShip = { ...ship };
+    newShip.placed = true;
+    newShip.positions = [];
 
-    // Find the next unplaced ship
+    for (let i = 0; i < ship.length; i++) {
+      const newRow = gameState.shipOrientation === 'horizontal' ? row : row + i;
+      const newCol = gameState.shipOrientation === 'horizontal' ? col + i : col;
+      newBoard[newRow][newCol] = 'ship';
+      newShip.positions.push([newRow, newCol]);
+    }
+
+    newShips[selectedShipIndex] = newShip;
+
+    // Find next unplaced ship
     const nextShipIndex = newShips.findIndex(s => !s.placed);
-    
-    setGameState({
-      ...gameState,
+
+    setGameState(prevState => ({
+      ...prevState,
       playerBoard: newBoard,
       playerShips: newShips,
-      currentShip: selectedShipIndex,
-      phase: nextShipIndex === -1 ? 'battle' : 'placement',
-    });
+      currentShip: nextShipIndex,
+    }));
+
+    setSelectedShipIndex(nextShipIndex);
 
     if (nextShipIndex === -1) {
-      toast.success("All ships placed! Battle begins!");
+      showToast('All ships placed! Starting game...');
+      setTimeout(() => {
+        setGameState(prevState => ({
+          ...prevState,
+          phase: 'battle',
+        }));
+      }, 1500);
     } else {
-      setSelectedShipIndex(nextShipIndex);
+      showToast(`Placed ${ship.name}!`);
     }
   };
 
@@ -98,7 +109,7 @@ const Index = () => {
       playerShips: ships,
       phase: 'battle',
     });
-    toast.success("Ships placed randomly! Battle begins!");
+    showToast("Ships placed randomly! Battle begins!");
   };
 
   const handleUndo = () => {
@@ -136,7 +147,7 @@ const Index = () => {
       currentShip: lastPlacedShipIndex,
     }));
 
-    toast.info(`Removed ${shipToRemove.name}`);
+    showToast(`Removed ${shipToRemove.name}`);
   };
 
   const handleEnemyAttack = (row: number, col: number) => {
@@ -144,13 +155,13 @@ const Index = () => {
 
     const cell = gameState.enemyBoard[row][col];
     if (cell === 'hit' || cell === 'miss') {
-      toast.error("Already attacked this cell!");
+      showToast('You already attacked this position');
       return;
     }
 
     const { board: newEnemyBoard, result } = makeAttack(gameState.enemyBoard, row, col);
     
-    toast.success(result === 'hit' ? '🎯 Hit!' : '💦 Miss!');
+    showToast(result === 'hit' ? 'Hit!' : 'Miss!');
 
     if (checkAllShipsSunk(gameState.enemyShips, newEnemyBoard)) {
       setGameState({
@@ -176,7 +187,7 @@ const Index = () => {
         aiCol
       );
 
-      toast.info(aiResult === 'hit' ? '💥 Enemy hit your ship!' : '💧 Enemy missed!');
+      showToast(aiResult === 'hit' ? 'Enemy hit your ship!' : 'Enemy missed!');
 
       if (checkAllShipsSunk(gameState.playerShips, newPlayerBoard)) {
         setGameState(prev => ({
@@ -199,6 +210,7 @@ const Index = () => {
   };
 
   const handleRestart = () => {
+    clearToasts();
     const { board: enemyBoard, ships: enemyShips } = placeShipsRandomly();
     setGameState({
       phase: 'placement',
@@ -211,6 +223,8 @@ const Index = () => {
       isPlayerTurn: true,
       winner: null,
     });
+    setSelectedShipIndex(0);
+    showToast('New game started!');
   };
 
   return (
