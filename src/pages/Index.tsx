@@ -100,20 +100,17 @@ const Index = () => {
   };
 
   const handleUndo = () => {
-    // Find the last placed ship
-    const placedShips = gameState.playerShips.filter(ship => ship.placed);
-    if (placedShips.length === 0) return;
-
-    const lastPlacedShipIndex = gameState.playerShips.findIndex(ship => 
-      ship.placed && ship.positions.length > 0
-    );
+    // Find the last placed ship using findLastIndex for better accuracy
+    const lastPlacedShipIndex = gameState.playerShips.reduce((lastIndex, ship, currentIndex) => {
+      return ship.placed && ship.positions.length > 0 ? currentIndex : lastIndex;
+    }, -1);
 
     if (lastPlacedShipIndex === -1) return;
 
     const shipToRemove = gameState.playerShips[lastPlacedShipIndex];
 
     // Create new board without the last placed ship
-    const newBoard = gameState.playerBoard.map(r => [...r]);
+    const newBoard = gameState.playerBoard.map(row => [...row]);
     shipToRemove.positions.forEach(([row, col]) => {
       newBoard[row][col] = 'empty';
     });
@@ -126,7 +123,7 @@ const Index = () => {
       positions: [],
     };
 
-    // Update selectedShipIndex to the removed ship
+    // Update both selectedShipIndex and currentShip to maintain consistency
     setSelectedShipIndex(lastPlacedShipIndex);
 
     setGameState(prevState => ({
@@ -134,6 +131,7 @@ const Index = () => {
       playerBoard: newBoard,
       playerShips: newShips,
       phase: 'placement',
+      currentShip: lastPlacedShipIndex,
     }));
 
     toast.info(`Removed ${shipToRemove.name}`);
