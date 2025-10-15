@@ -17,6 +17,7 @@ const App = () => (
             position="top-right"
             theme="light"
             closeButton
+            visibleToasts={5}
             toastOptions={{
               style: {
                 background: 'hsl(var(--background))',
@@ -30,9 +31,9 @@ const App = () => (
                 maxWidth: '380px',
               },
               classNames: {
-                toast: 'group relative',
+                toast: 'group relative [&:not(:last-child)]:scale-[0.98] hover:!scale-100 transition-all duration-300',
                 title: 'font-medium pr-6',
-                description: 'text-muted-foreground text-sm',
+                description: 'text-sm',
                 actionButton: '!bg-primary !text-primary-foreground',
                 cancelButton: '!bg-muted !text-muted-foreground',
                 closeButton: '!absolute !top-2 !right-2 !h-5 !w-5 p-0.5 !text-foreground/50 hover:!text-foreground !bg-transparent hover:!bg-foreground/10 rounded',
@@ -43,6 +44,25 @@ const App = () => (
               },
             }}
           />
+          <style dangerouslySetInnerHTML={{
+            __html: `
+              .toast {
+                --toast-foreground: hsl(var(--foreground));
+              }
+              .toast:not(:last-child) {
+                --toast-foreground: hsl(var(--muted-foreground));
+              }
+              .toast:last-child {
+                --toast-foreground: hsl(var(--foreground));
+              }
+              .toast .title {
+                color: var(--toast-foreground) !important;
+              }
+              .toast .description {
+                color: color-mix(in srgb, var(--toast-foreground) 80%, transparent) !important;
+              }
+            `
+          }} />
           
           {/* Dark mode styles */}
           <style dangerouslySetInnerHTML={{

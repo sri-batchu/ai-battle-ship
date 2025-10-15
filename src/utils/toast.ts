@@ -16,6 +16,13 @@ const showNextToast = () => {
 
   const toastOptions = {
     duration: TOAST_DURATION,
+    style: {
+      background: 'hsl(var(--background))',
+      color: 'hsl(var(--foreground))',
+      border: '1px solid hsl(var(--border))',
+      opacity: '1',
+      zIndex: '1000',
+    },
     onAutoClose: () => {
       visibleToasts--;
       // Process next toast after a small delay

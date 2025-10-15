@@ -114,9 +114,10 @@ const Index = () => {
       ...gameState,
       playerBoard: board,
       playerShips: ships,
-      phase: 'battle',
+      phase: 'ready',
     });
-    showToast("Ships placed randomly! Battle begins!");
+    setSelectedShipIndex(null);
+    showToast("Ships placed randomly! Ready to start battle!");
   };
 
   const handleUndo = () => {
@@ -297,7 +298,7 @@ const Index = () => {
                 className="px-8 py-6 text-lg font-bold bg-green-600 hover:bg-green-700 transition-transform hover:scale-105"
                 size="lg"
               >
-                START BATTLE
+                Start Battle
               </Button>
               <Button 
                 onClick={() => {
@@ -315,7 +316,7 @@ const Index = () => {
               </Button>
             </div>
             
-            <div className="mt-8 w-full max-w-2xl">
+            <div className="mt-8 flex justify-center">
               <div className="inline-grid grid-cols-10 gap-0.5 bg-grid-border p-2 sm:p-3 rounded-xl shadow-2xl hover:shadow-glow transition-shadow duration-300">
                 {gameState.playerBoard.map((row, rowIndex) =>
                   row.map((cell, colIndex) => (

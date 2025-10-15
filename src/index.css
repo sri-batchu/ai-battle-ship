@@ -71,3 +71,58 @@ All colors MUST be HSL.
     @apply bg-background text-foreground;
   }
 }
+
+/* Fix toast notification visibility */
+@layer components {
+  [data-sonner-toaster] {
+    --normal-bg: hsl(var(--background));
+    --normal-border: hsl(var(--border));
+    --normal-text: hsl(var(--foreground));
+  }
+  
+  [data-sonner-toast] {
+    background: hsl(var(--background)) !important;
+    color: hsl(var(--foreground)) !important;
+    border: 1px solid hsl(var(--border)) !important;
+    opacity: 1 !important;
+  }
+  
+  [data-sonner-toast] [data-title] {
+    color: hsl(var(--foreground)) !important;
+    opacity: 1 !important;
+  }
+  
+  [data-sonner-toast] [data-description] {
+    color: hsl(var(--muted-foreground)) !important;
+    opacity: 1 !important;
+  }
+  
+  /* Force all toast text to be visible */
+  [data-sonner-toast] * {
+    color: hsl(var(--foreground)) !important;
+    opacity: 1 !important;
+  }
+  
+  /* Ensure old toasts remain visible */
+  [data-sonner-toast][data-removed="false"] {
+    opacity: 1 !important;
+  }
+  
+  /* Force visibility for all toast states */
+  [data-sonner-toast][data-mounted="true"] {
+    opacity: 1 !important;
+  }
+  
+  [data-sonner-toast][data-expanded="true"] {
+    opacity: 1 !important;
+  }
+  
+  [data-sonner-toast][data-expanded="false"] {
+    opacity: 1 !important;
+  }
+  
+  /* Hide any toasts beyond the 3rd one */
+  [data-sonner-toast]:nth-child(n+4) {
+    display: none !important;
+  }
+}

@@ -9,7 +9,7 @@ export type Ship = {
 
 export type Board = CellState[][];
 
-export type GamePhase = 'placement' | 'battle' | 'gameover';
+export type GamePhase = 'placement' | 'ready' | 'battle' | 'gameover';
 
 export type GameState = {
   phase: GamePhase;
