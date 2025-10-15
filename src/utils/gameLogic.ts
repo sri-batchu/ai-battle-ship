@@ -31,15 +31,24 @@ export const canPlaceShip = (
   length: number,
   orientation: 'horizontal' | 'vertical'
 ): boolean => {
+  const isWithinBounds = (r: number, c: number) =>
+    r >= 0 && r < GRID_SIZE && c >= 0 && c < GRID_SIZE;
+
   if (orientation === 'horizontal') {
     if (col + length > GRID_SIZE) return false;
-    for (let i = 0; i < length; i++) {
-      if (board[row][col + i] === 'ship') return false;
+    for (let r = row - 1; r <= row + 1; r++) {
+      for (let c = col - 1; c <= col + length; c++) {
+        if (!isWithinBounds(r, c)) continue;
+        if (board[r][c] === 'ship') return false;
+      }
     }
   } else {
     if (row + length > GRID_SIZE) return false;
-    for (let i = 0; i < length; i++) {
-      if (board[row + i][col] === 'ship') return false;
+    for (let r = row - 1; r <= row + length; r++) {
+      for (let c = col - 1; c <= col + 1; c++) {
+        if (!isWithinBounds(r, c)) continue;
+        if (board[r][c] === 'ship') return false;
+      }
     }
   }
   return true;

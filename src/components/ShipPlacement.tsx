@@ -56,19 +56,19 @@ export const ShipPlacement = ({
         <h2 className="text-2xl font-bold">Select a Ship to Place</h2>
         <div className="flex gap-2 flex-wrap justify-center">
           {ships.map((ship, index) => (
-            <button
+            <Button
               key={ship.name}
-              onClick={() => onShipSelect?.(index)}
+              onClick={() => onShipSelect(index)}
               className={cn(
                 "px-4 py-2 rounded-md font-medium transition-colors",
-                ship.placed 
-                  ? "bg-green-600 text-white" 
+                ship.placed
+                  ? "bg-green-600 text-white"
                   : "bg-blue-600 text-white hover:bg-blue-700"
               )}
               disabled={ship.placed}
             >
               {ship.name} ({ship.length})
-            </button>
+            </Button>
           ))}
         </div>
       </div>
