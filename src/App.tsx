@@ -15,7 +15,7 @@ const App = () => (
         <div className="min-h-screen bg-background text-foreground">
           <Toaster
             position="top-right"
-            richColors
+            theme="light"
             closeButton
             toastOptions={{
               style: {
@@ -26,17 +26,44 @@ const App = () => (
                 padding: '0.75rem 1rem',
                 fontSize: '0.875rem',
                 lineHeight: '1.5',
-                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+                maxWidth: '380px',
               },
               classNames: {
-                toast: 'group',
-                title: 'font-medium',
-                description: 'text-muted-foreground',
-                actionButton: 'bg-primary text-primary-foreground',
-                cancelButton: 'bg-muted text-muted-foreground',
+                toast: 'group relative',
+                title: 'font-medium pr-6',
+                description: 'text-muted-foreground text-sm',
+                actionButton: '!bg-primary !text-primary-foreground',
+                cancelButton: '!bg-muted !text-muted-foreground',
+                closeButton: '!absolute !top-2 !right-2 !h-5 !w-5 p-0.5 !text-foreground/50 hover:!text-foreground !bg-transparent hover:!bg-foreground/10 rounded',
+                success: '!border-green-500/20',
+                error: '!border-red-500/20',
+                warning: '!border-yellow-500/20',
+                info: '!border-blue-500/20',
               },
             }}
           />
+          
+          {/* Dark mode styles */}
+          <style dangerouslySetInnerHTML={{
+            __html: `
+              .dark .toast {
+                --toast-bg: hsl(var(--background));
+                --toast-foreground: hsl(var(--foreground));
+                --toast-border: hsl(var(--border));
+                background: var(--toast-bg) !important;
+                color: var(--toast-foreground) !important;
+                border-color: var(--toast-border) !important;
+              }
+              .toast .close-button {
+                color: currentColor !important;
+                opacity: 0.5;
+              }
+              .toast:hover .close-button {
+                opacity: 0.8;
+              }
+            `
+          }} />
           <Routes>
             <Route path="/" element={<WelcomeScreen />} />
             <Route path="/game" element={<Game />} />
