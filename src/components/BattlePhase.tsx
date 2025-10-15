@@ -1,7 +1,7 @@
 import { Board } from '@/types/game';
 import { GameBoard } from '@/components/GameBoard';
 import { Button } from '@/components/ui/button';
-import { Crosshair, Shield, RotateCcw } from 'lucide-react';
+import { Crosshair, Shield, RotateCcw, Play } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface BattlePhaseProps {
@@ -10,6 +10,7 @@ interface BattlePhaseProps {
   isPlayerTurn: boolean;
   onEnemyCellClick: (row: number, col: number) => void;
   onRestart: () => void;
+  onAutoPlay?: () => void;
 }
 
 export const BattlePhase = ({
@@ -18,6 +19,7 @@ export const BattlePhase = ({
   isPlayerTurn,
   onEnemyCellClick,
   onRestart,
+  onAutoPlay,
 }: BattlePhaseProps) => {
   return (
     <div className="flex flex-col items-center gap-6 sm:gap-8 w-full px-4">
@@ -41,15 +43,28 @@ export const BattlePhase = ({
             </>
           )}
         </div>
-        <Button
-          onClick={onRestart}
-          variant="outline"
-          size="default"
-          className="gap-2 shadow-md"
-        >
-          <RotateCcw className="w-4 h-4 sm:w-5 sm:h-5" />
-          Restart
-        </Button>
+        <div className="flex gap-3 flex-wrap justify-center">
+          <Button
+            onClick={onRestart}
+            variant="outline"
+            size="default"
+            className="gap-2 shadow-md"
+          >
+            <RotateCcw className="w-4 h-4 sm:w-5 sm:h-5" />
+            Restart
+          </Button>
+          {onAutoPlay && (
+            <Button
+              onClick={onAutoPlay}
+              variant="secondary"
+              size="default"
+              className="gap-2 shadow-md"
+            >
+              <Play className="w-4 h-4 sm:w-5 sm:h-5" />
+              Play for Me
+            </Button>
+          )}
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-[auto_auto] xl:grid-cols-[auto_auto_auto] gap-6 sm:gap-8 xl:gap-12 items-center w-full max-w-7xl justify-center">

@@ -38,9 +38,6 @@ export const GameOver = ({
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-success drop-shadow-lg">
               Fleet Victorious
             </h2>
-            <p className="text-base sm:text-lg text-muted-foreground">
-              Enemy fleet eliminated. Outstanding command.
-            </p>
           </>
         ) : (
           <>
@@ -48,17 +45,22 @@ export const GameOver = ({
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-destructive drop-shadow-lg">
               Fleet Lost
             </h2>
-            <p className="text-base sm:text-lg text-muted-foreground">
-              Our ships were sunk. Regroup and try again.
-            </p>
           </>
         )}
       </div>
 
+      <Button
+        onClick={onRestart}
+        size="lg"
+        className="text-lg sm:text-xl px-8 sm:px-10 py-4 sm:py-5 hover:scale-105 active:scale-95 transition-transform shadow-xl"
+      >
+        Play Again
+      </Button>
+
       <div className="w-full max-w-6xl space-y-8">
         <div className="grid gap-4 sm:gap-6 sm:grid-cols-2">
-          <FleetStatsCard label="Your Fleet" shots={stats.player} shipsSunk={shipsSunkByPlayer} accent="ally" />
-          <FleetStatsCard label="Enemy Fleet" shots={stats.enemy} shipsSunk={shipsSunkByEnemy} accent="enemy" />
+          <FleetStatsCard label="You" shots={stats.player} shipsSunk={shipsSunkByPlayer} accent="ally" />
+          <FleetStatsCard label="Enemy" shots={stats.enemy} shipsSunk={shipsSunkByEnemy} accent="enemy" />
         </div>
 
         <section className="grid gap-6 lg:grid-cols-2" aria-label="Final battle boards">
@@ -76,7 +78,7 @@ export const GameOver = ({
         size="lg"
         className="text-lg sm:text-xl px-8 sm:px-10 py-4 sm:py-5 hover:scale-105 active:scale-95 transition-transform shadow-xl"
       >
-        🎮 Play Again
+        Play Again
       </Button>
     </div>
   );

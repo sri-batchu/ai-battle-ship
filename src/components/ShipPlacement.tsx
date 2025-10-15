@@ -1,6 +1,7 @@
 import { Board, Ship } from '@/types/game';
 import { Button } from '@/components/ui/button';
 import { canPlaceShip, GRID_SIZE } from '@/utils/gameLogic';
+import { getShipIcon, getShipColor } from '@/utils/shipIcons';
 import { cn } from '@/lib/utils';
 import { RotateCw, Undo } from 'lucide-react';
 
@@ -29,6 +30,13 @@ export const ShipPlacement = ({
   onShipSelect,
 }: ShipPlacementProps) => {
   const selectedShip = currentShip !== null ? ships[currentShip] : null;
+
+  // Function to find which ship is in a specific cell
+  const getShipInCell = (row: number, col: number): Ship | null => {
+    return ships.find(ship => 
+      ship.placed && ship.positions.some(([r, c]) => r === row && c === col)
+    ) || null;
+  };
 
   const getCellClassName = (row: number, col: number) => {
     const baseClasses = "w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 border border-grid-border transition-all duration-300 flex items-center justify-center";
@@ -60,13 +68,16 @@ export const ShipPlacement = ({
               key={ship.name}
               onClick={() => onShipSelect(index)}
               className={cn(
-                "px-4 py-2 rounded-md font-medium transition-colors",
+                "px-4 py-2 rounded-md font-medium transition-colors flex items-center gap-2",
                 ship.placed
                   ? "bg-green-600 text-white"
                   : "bg-blue-600 text-white hover:bg-blue-700"
               )}
               disabled={ship.placed}
             >
+              <span className={`text-sm ${getShipColor(ship.name)}`}>
+                {getShipIcon(ship.name)}
+              </span>
               {ship.name} ({ship.length})
             </Button>
           ))}
@@ -79,10 +90,6 @@ export const ShipPlacement = ({
     <div className="flex flex-col items-center gap-6 w-full max-w-4xl mx-auto px-4">
       <div className="text-center space-y-3 animate-in fade-in duration-500">
         <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground">⚓ Deploy Fleet</h2>
-        <p className="text-base sm:text-lg text-muted-foreground">
-          Deploying <span className="text-ocean-light font-bold text-lg sm:text-xl">{selectedShip.name}</span>
-          <span className="text-sm sm:text-base"> · {selectedShip.length} tiles</span>
-        </p>
       </div>
 
       <div className="flex flex-wrap gap-3 justify-center w-full">
@@ -117,18 +124,27 @@ export const ShipPlacement = ({
         </Button>
       </div>
 
-      <div className="w-full overflow-x-auto">
-        <div className="inline-grid grid-cols-10 gap-0.5 bg-grid-border p-2 sm:p-3 rounded-xl shadow-2xl hover:shadow-glow transition-shadow duration-300 min-w-[18rem]">
+      <div className="w-full flex justify-center overflow-x-auto">
+        <div className="grid grid-cols-10 gap-0.5 bg-grid-border p-2 sm:p-3 rounded-xl shadow-2xl hover:shadow-glow transition-shadow duration-300 min-w-[18rem]">
           {board.map((row, rowIndex) =>
-            row.map((_, colIndex) => (
-              <div
-                key={`${rowIndex}-${colIndex}`}
-                className={getCellClassName(rowIndex, colIndex)}
-                onClick={() => onCellClick(rowIndex, colIndex)}
-                role="button"
-                aria-label={`Place ship at ${rowIndex}-${colIndex}`}
-              />
-            ))
+            row.map((_, colIndex) => {
+              const shipInCell = getShipInCell(rowIndex, colIndex);
+              return (
+                <div
+                  key={`${rowIndex}-${colIndex}`}
+                  className={getCellClassName(rowIndex, colIndex)}
+                  onClick={() => onCellClick(rowIndex, colIndex)}
+                  role="button"
+                  aria-label={`Place ship at ${rowIndex}-${colIndex}`}
+                >
+                  {shipInCell && (
+                    <span className={`text-lg sm:text-xl ${getShipColor(shipInCell.name)}`}>
+                      {getShipIcon(shipInCell.name)}
+                    </span>
+                  )}
+                </div>
+              );
+            })
           )}
         </div>
       </div>
@@ -139,7 +155,7 @@ export const ShipPlacement = ({
             key={s.name}
             className={cn(
               "px-3 py-2 rounded-full text-xs sm:text-sm font-medium transition-all duration-300",
-              "hover:scale-105 shadow-md",
+              "hover:scale-105 shadow-md flex items-center gap-1",
               s.placed
                 ? "bg-success text-success-foreground animate-in slide-in-from-bottom"
                 : idx === currentShip
@@ -148,6 +164,9 @@ export const ShipPlacement = ({
             )}
           >
             {s.placed && <span className="mr-1">✓</span>}
+            <span className={`text-sm ${getShipColor(s.name)}`}>
+              {getShipIcon(s.name)}
+            </span>
             {s.name} ({s.length})
           </div>
         ))}

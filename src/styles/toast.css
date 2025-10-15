@@ -1,0 +1,32 @@
+/* Ensure text is always visible in toasts */
+.sonner-toast {
+  --toast-bg: hsl(var(--background));
+  --toast-text: hsl(var(--foreground));
+  --toast-border: hsl(var(--border));
+  
+  background: var(--toast-bg) !important;
+  color: var(--toast-text) !important;
+  border: 1px solid var(--toast-border) !important;
+}
+
+/* Style for older notifications */
+.sonner-toast:not(:last-child) {
+  --toast-bg: hsl(var(--muted));
+  --toast-text: hsl(var(--foreground));
+  opacity: 0.9 !important;
+}
+
+/* Ensure text is always visible */
+.sonner-toast .title {
+  color: var(--toast-text) !important;
+}
+
+.sonner-toast .description {
+  color: color-mix(in srgb, var(--toast-text) 90%, transparent) !important;
+}
+
+/* Hover state */
+.sonner-toast:hover {
+  opacity: 1 !important;
+  transform: scale(1.02) !important;
+}

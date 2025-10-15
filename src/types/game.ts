@@ -1,5 +1,7 @@
 export type CellState = 'empty' | 'ship' | 'hit' | 'miss';
 
+export type ShipType = 'Carrier' | 'Battleship' | 'Destroyer' | 'Submarine' | 'Patrol Boat';
+
 export type Ship = {
   name: string;
   length: number;
@@ -8,6 +10,11 @@ export type Ship = {
 };
 
 export type Board = CellState[][];
+
+export type BoardWithShips = {
+  cellState: CellState;
+  shipName?: string;
+}[][];
 
 export type GamePhase = 'placement' | 'ready' | 'battle' | 'gameover';
 

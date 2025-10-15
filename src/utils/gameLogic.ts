@@ -1,4 +1,4 @@
-import { Board, Ship, CellState } from '@/types/game';
+import { Board, Ship, CellState, ShipType } from '@/types/game';
 
 export const GRID_SIZE = 10;
 
@@ -139,15 +139,51 @@ export const calculateAccuracy = (hits: number, shotsFired: number): number => {
   return Number(((hits / shotsFired) * 100).toFixed(1));
 };
 
-export const getAIMove = (board: Board): [number, number] => {
+// Function to get cells around a destroyed ship that should be avoided
+const getAvoidZones = (board: Board, ships: Ship[]): Set<string> => {
+  const avoidZones = new Set<string>();
+  
+  // Find completely destroyed ships
+  const destroyedShips = ships.filter(ship => 
+    ship.placed && ship.positions.length > 0 && 
+    ship.positions.every(([row, col]) => board[row][col] === 'hit')
+  );
+  
+  // For each destroyed ship, mark surrounding cells as avoid zones
+  for (const ship of destroyedShips) {
+    for (const [row, col] of ship.positions) {
+      // Mark all 8 surrounding cells as avoid zones
+      for (let dRow = -1; dRow <= 1; dRow++) {
+        for (let dCol = -1; dCol <= 1; dCol++) {
+          const newRow = row + dRow;
+          const newCol = col + dCol;
+          if (newRow >= 0 && newRow < GRID_SIZE && 
+              newCol >= 0 && newCol < GRID_SIZE) {
+            avoidZones.add(`${newRow},${newCol}`);
+          }
+        }
+      }
+    }
+  }
+  
+  return avoidZones;
+};
+
+export const getAIMove = (board: Board, ships?: Ship[]): [number, number] => {
   const availableCells: [number, number][] = [];
   const hitCells: [number, number][] = [];
+  
+  // Get avoid zones if ships are provided
+  const avoidZones = ships ? getAvoidZones(board, ships) : new Set<string>();
 
   // Find all available cells and hit cells
   for (let row = 0; row < GRID_SIZE; row++) {
     for (let col = 0; col < GRID_SIZE; col++) {
       if (board[row][col] === 'empty' || board[row][col] === 'ship') {
-        availableCells.push([row, col]);
+        // Skip cells in avoid zones
+        if (!avoidZones.has(`${row},${col}`)) {
+          availableCells.push([row, col]);
+        }
       } else if (board[row][col] === 'hit') {
         hitCells.push([row, col]);
       }
@@ -223,7 +259,8 @@ export const getAIMove = (board: Board): [number, number] => {
         const newCol = hitCol + dCol;
         if (newRow >= 0 && newRow < GRID_SIZE && 
             newCol >= 0 && newCol < GRID_SIZE &&
-            (board[newRow][newCol] === 'empty' || board[newRow][newCol] === 'ship')) {
+            (board[newRow][newCol] === 'empty' || board[newRow][newCol] === 'ship') &&
+            !avoidZones.has(`${newRow},${newCol}`)) {
           targetCells.push([newRow, newCol]);
         }
       }
