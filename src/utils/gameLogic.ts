@@ -128,6 +128,17 @@ export const checkAllShipsSunk = (ships: Ship[], board: Board): boolean => {
   });
 };
 
+export const countSunkShips = (ships: Ship[], board: Board): number => {
+  return ships.filter(ship =>
+    ship.positions.length > 0 && ship.positions.every(([row, col]) => board[row][col] === 'hit')
+  ).length;
+};
+
+export const calculateAccuracy = (hits: number, shotsFired: number): number => {
+  if (shotsFired === 0) return 0;
+  return Number(((hits / shotsFired) * 100).toFixed(1));
+};
+
 export const getAIMove = (board: Board): [number, number] => {
   const availableCells: [number, number][] = [];
   const hitCells: [number, number][] = [];

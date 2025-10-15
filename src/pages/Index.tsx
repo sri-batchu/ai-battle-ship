@@ -20,6 +20,11 @@ import { showToast, clearToasts } from '@/utils/toast';
 
 const Index = () => {
   const navigate = useNavigate();
+  const createInitialStats = () => ({
+    player: { shotsFired: 0, hits: 0, misses: 0 },
+    enemy: { shotsFired: 0, hits: 0, misses: 0 },
+  });
+
   const [gameState, setGameState] = useState<GameState>(() => {
     const { board: enemyBoard, ships: enemyShips } = placeShipsRandomly();
     return {
@@ -32,6 +37,7 @@ const Index = () => {
       shipOrientation: 'horizontal',
       isPlayerTurn: true,
       winner: null,
+      stats: createInitialStats(),
     };
   });
 
@@ -110,12 +116,12 @@ const Index = () => {
 
   const handleRandomPlacement = () => {
     const { board, ships } = placeShipsRandomly();
-    setGameState({
-      ...gameState,
+    setGameState(prev => ({
+      ...prev,
       playerBoard: board,
       playerShips: ships,
       phase: 'ready',
-    });
+    }));
     setSelectedShipIndex(null);
     showToast("Ships placed randomly! Ready to start battle!");
   };
@@ -169,23 +175,33 @@ const Index = () => {
 
     const { board: newEnemyBoard, result } = makeAttack(gameState.enemyBoard, row, col);
 
-    showToast(result === 'hit' ? 'Hit!' : 'Miss!');
+    showToast(result === 'hit' ? 'Direct hit!' : 'Splash.');
 
-    if (checkAllShipsSunk(gameState.enemyShips, newEnemyBoard)) {
-      setGameState(prev => ({
+    const playerWon = checkAllShipsSunk(gameState.enemyShips, newEnemyBoard);
+
+    setGameState(prev => {
+      const updatedPlayerStats = {
+        shotsFired: prev.stats.player.shotsFired + 1,
+        hits: prev.stats.player.hits + (result === 'hit' ? 1 : 0),
+        misses: prev.stats.player.misses + (result === 'miss' ? 1 : 0),
+      };
+
+      return {
         ...prev,
         enemyBoard: newEnemyBoard,
-        phase: 'gameover',
-        winner: 'player',
-      }));
+        isPlayerTurn: false,
+        phase: playerWon ? 'gameover' : prev.phase,
+        winner: playerWon ? 'player' : prev.winner,
+        stats: {
+          ...prev.stats,
+          player: updatedPlayerStats,
+        },
+      };
+    });
+
+    if (playerWon) {
       return;
     }
-
-    setGameState(prev => ({
-      ...prev,
-      enemyBoard: newEnemyBoard,
-      isPlayerTurn: false,
-    }));
 
     setTimeout(() => {
       let aiResult: 'hit' | 'miss' = 'miss';
@@ -200,23 +216,28 @@ const Index = () => {
 
         aiResult = computedResult;
 
-        if (checkAllShipsSunk(prev.playerShips, newPlayerBoard)) {
-          return {
-            ...prev,
-            playerBoard: newPlayerBoard,
-            phase: 'gameover',
-            winner: 'enemy',
-          };
-        }
+        const updatedEnemyStats = {
+          shotsFired: prev.stats.enemy.shotsFired + 1,
+          hits: prev.stats.enemy.hits + (computedResult === 'hit' ? 1 : 0),
+          misses: prev.stats.enemy.misses + (computedResult === 'miss' ? 1 : 0),
+        };
+
+        const enemyWon = checkAllShipsSunk(prev.playerShips, newPlayerBoard);
 
         return {
           ...prev,
           playerBoard: newPlayerBoard,
-          isPlayerTurn: true,
+          isPlayerTurn: enemyWon ? false : true,
+          phase: enemyWon ? 'gameover' : prev.phase,
+          winner: enemyWon ? 'enemy' : prev.winner,
+          stats: {
+            ...prev.stats,
+            enemy: updatedEnemyStats,
+          },
         };
       });
 
-      showToast(aiResult === 'hit' ? 'Enemy hit your ship!' : 'Enemy missed!');
+      showToast(aiResult === 'hit' ? 'Enemy scored a hit!' : 'Enemy missed.');
     }, 200);
   };
 
@@ -235,6 +256,7 @@ const Index = () => {
       shipOrientation: 'horizontal',
       isPlayerTurn: true,
       winner: null,
+      stats: createInitialStats(),
     });
     
     // Reset selected ship to Carrier
@@ -264,11 +286,11 @@ const Index = () => {
             AI Battleship
           </h1>
           <p className="text-base sm:text-lg md:text-xl text-muted-foreground font-medium">
-            {gameState.phase === 'placement' 
-              ? '🚢 Place your ships on the grid' 
+            {gameState.phase === 'placement'
+              ? '🚢 Deploy your fleet'
               : gameState.phase === 'battle'
-              ? '⚔️ Battle in progress!' 
-              : '🎮 Game Over'}
+              ? '⚔️ Engage the enemy'
+              : '🎮 Final report'}
           </p>
         </header>
 
@@ -289,9 +311,9 @@ const Index = () => {
         {gameState.phase === 'ready' && (
           <div className="flex flex-col items-center gap-6 w-full max-w-4xl mx-auto px-4">
             <div className="text-center space-y-3">
-              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground">🚀 Ready for Battle!</h2>
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground">🚀 Ready for Battle</h2>
               <p className="text-base sm:text-lg text-muted-foreground">
-                All ships are in position. Ready to start the battle?
+                Fleet is standing by. Start the engagement?
               </p>
             </div>
             
@@ -347,7 +369,15 @@ const Index = () => {
         )}
 
         {gameState.phase === 'gameover' && gameState.winner && (
-          <GameOver winner={gameState.winner} onRestart={handleRestart} />
+          <GameOver
+            winner={gameState.winner}
+            onRestart={handleRestart}
+            playerBoard={gameState.playerBoard}
+            enemyBoard={gameState.enemyBoard}
+            playerShips={gameState.playerShips}
+            enemyShips={gameState.enemyShips}
+            stats={gameState.stats}
+          />
         )}
       </div>
     </div>
