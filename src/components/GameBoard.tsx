@@ -10,26 +10,26 @@ interface GameBoardProps {
 
 export const GameBoard = ({ board, isEnemy = false, onCellClick, showShips = true }: GameBoardProps) => {
   const getCellClassName = (cell: CellState) => {
-    const baseClasses = "w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 border border-grid-border transition-all duration-300 flex items-center justify-center";
+    const baseClasses = "w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 border border-grid-border flex items-center justify-center";
     
     switch (cell) {
       case 'ship':
         return cn(
           baseClasses,
           showShips 
-            ? "bg-ship shadow-ship hover:shadow-glow hover:scale-105 cursor-default" 
-            : "bg-grid-cell hover:bg-ocean-primary/20 hover:scale-105 cursor-pointer active:scale-95"
+            ? "bg-ship cursor-default" 
+            : "bg-grid-cell cursor-pointer hover:bg-ocean-primary/20 active:bg-ocean-primary/30"
         );
       case 'hit':
         return cn(
           baseClasses, 
-          "bg-hit animate-pulse shadow-glow cursor-default relative",
-          "after:content-['💥'] after:absolute after:text-xl sm:after:text-2xl after:animate-bounce"
+          "bg-hit/80 cursor-default relative",
+          "after:content-['💥'] after:absolute after:text-xl sm:after:text-2xl"
         );
       case 'miss':
         return cn(
           baseClasses, 
-          "bg-secondary cursor-default relative",
+          "bg-secondary/30 cursor-default relative",
           "after:content-['💦'] after:absolute after:text-lg sm:after:text-xl after:opacity-60"
         );
       default:
@@ -37,7 +37,7 @@ export const GameBoard = ({ board, isEnemy = false, onCellClick, showShips = tru
           baseClasses, 
           "bg-grid-cell cursor-pointer",
           isEnemy && onCellClick 
-            ? "hover:bg-ocean-primary/30 hover:scale-110 active:scale-95 hover:shadow-md" 
+            ? "hover:bg-ocean-primary/20 active:bg-ocean-primary/30" 
             : "cursor-default opacity-75"
         );
     }
