@@ -168,52 +168,55 @@ const Index = () => {
     }
 
     const { board: newEnemyBoard, result } = makeAttack(gameState.enemyBoard, row, col);
-    
+
     showToast(result === 'hit' ? 'Hit!' : 'Miss!');
 
     if (checkAllShipsSunk(gameState.enemyShips, newEnemyBoard)) {
-      setGameState({
-        ...gameState,
+      setGameState(prev => ({
+        ...prev,
         enemyBoard: newEnemyBoard,
         phase: 'gameover',
         winner: 'player',
-      });
+      }));
       return;
     }
 
-    setGameState({
-      ...gameState,
+    setGameState(prev => ({
+      ...prev,
       enemyBoard: newEnemyBoard,
       isPlayerTurn: false,
-    });
+    }));
 
     setTimeout(() => {
-      const [aiRow, aiCol] = getAIMove(gameState.playerBoard);
-      const { board: newPlayerBoard, result: aiResult } = makeAttack(
-        gameState.playerBoard,
-        aiRow,
-        aiCol
-      );
+      let aiResult: 'hit' | 'miss' = 'miss';
 
-      showToast(aiResult === 'hit' ? 'Enemy hit your ship!' : 'Enemy missed!');
+      setGameState(prev => {
+        const [aiRow, aiCol] = getAIMove(prev.playerBoard);
+        const { board: newPlayerBoard, result: computedResult } = makeAttack(
+          prev.playerBoard,
+          aiRow,
+          aiCol
+        );
 
-      if (checkAllShipsSunk(gameState.playerShips, newPlayerBoard)) {
-        setGameState(prev => ({
+        aiResult = computedResult;
+
+        if (checkAllShipsSunk(prev.playerShips, newPlayerBoard)) {
+          return {
+            ...prev,
+            playerBoard: newPlayerBoard,
+            phase: 'gameover',
+            winner: 'enemy',
+          };
+        }
+
+        return {
           ...prev,
           playerBoard: newPlayerBoard,
-          enemyBoard: newEnemyBoard,
-          phase: 'gameover',
-          winner: 'enemy',
-        }));
-        return;
-      }
+          isPlayerTurn: true,
+        };
+      });
 
-      setGameState(prev => ({
-        ...prev,
-        playerBoard: newPlayerBoard,
-        enemyBoard: newEnemyBoard,
-        isPlayerTurn: true,
-      }));
+      showToast(aiResult === 'hit' ? 'Enemy hit your ship!' : 'Enemy missed!');
     }, 200);
   };
 
