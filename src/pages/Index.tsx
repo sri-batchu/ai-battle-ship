@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { GameState } from '@/types/game';
+import { Button } from '@/components/ui/button';
 import {
   createEmptyBoard,
   createInitialShips,
@@ -82,16 +83,22 @@ const Index = () => {
     setSelectedShipIndex(nextShipIndex);
 
     if (nextShipIndex === -1) {
-      showToast('All ships placed! Starting game...');
-      setTimeout(() => {
-        setGameState(prevState => ({
-          ...prevState,
-          phase: 'battle',
-        }));
-      }, 1500);
+      showToast('All ships placed! Ready to start battle!');
+      setGameState(prevState => ({
+        ...prevState,
+        phase: 'ready',
+      }));
     } else {
       showToast(`Placed ${ship.name}!`);
     }
+  };
+
+  const startBattle = () => {
+    showToast('Battle begins! Good luck!');
+    setGameState(prevState => ({
+      ...prevState,
+      phase: 'battle',
+    }));
   };
 
   const handleOrientationToggle = () => {
@@ -180,7 +187,7 @@ const Index = () => {
     });
 
     setTimeout(() => {
-      const [aiRow, aiCol] = getAIMove(newEnemyBoard);
+      const [aiRow, aiCol] = getAIMove(gameState.playerBoard);
       const { board: newPlayerBoard, result: aiResult } = makeAttack(
         gameState.playerBoard,
         aiRow,
@@ -206,7 +213,7 @@ const Index = () => {
         enemyBoard: newEnemyBoard,
         isPlayerTurn: true,
       }));
-    }, 1500);
+    }, 200);
   };
 
   const handleRestart = () => {
@@ -273,6 +280,56 @@ const Index = () => {
             onUndo={handleUndo}
             onShipSelect={handleShipSelect}
           />
+        )}
+
+        {gameState.phase === 'ready' && (
+          <div className="flex flex-col items-center gap-6 w-full max-w-4xl mx-auto px-4">
+            <div className="text-center space-y-3">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground">🚀 Ready for Battle!</h2>
+              <p className="text-base sm:text-lg text-muted-foreground">
+                All ships are in position. Ready to start the battle?
+              </p>
+            </div>
+            
+            <div className="flex flex-wrap gap-4 justify-center">
+              <Button 
+                onClick={startBattle}
+                className="px-8 py-6 text-lg font-bold bg-green-600 hover:bg-green-700 transition-transform hover:scale-105"
+                size="lg"
+              >
+                START BATTLE
+              </Button>
+              <Button 
+                onClick={() => {
+                  setGameState(prevState => ({
+                    ...prevState,
+                    phase: 'placement',
+                  }));
+                  setSelectedShipIndex(gameState.playerShips.length - 1);
+                }}
+                variant="outline"
+                className="px-6 py-6 text-lg"
+                size="lg"
+              >
+                Adjust Ships
+              </Button>
+            </div>
+            
+            <div className="mt-8 w-full max-w-2xl">
+              <div className="inline-grid grid-cols-10 gap-0.5 bg-grid-border p-2 sm:p-3 rounded-xl shadow-2xl hover:shadow-glow transition-shadow duration-300">
+                {gameState.playerBoard.map((row, rowIndex) =>
+                  row.map((cell, colIndex) => (
+                    <div
+                      key={`${rowIndex}-${colIndex}`}
+                      className={`w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 border border-grid-border ${
+                        cell === 'ship' ? 'bg-ship' : 'bg-grid-cell/50'
+                      }`}
+                    />
+                  ))
+                )}
+              </div>
+            </div>
+          </div>
         )}
 
         {gameState.phase === 'battle' && (
