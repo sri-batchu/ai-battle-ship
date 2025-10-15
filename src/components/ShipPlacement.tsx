@@ -26,6 +26,7 @@ export const ShipPlacement = ({
   onOrientationToggle,
   onRandomPlacement,
   onUndo,
+  onShipSelect,
 }: ShipPlacementProps) => {
   const selectedShip = currentShip !== null ? ships[currentShip] : null;
 
