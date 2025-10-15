@@ -1,18 +1,12 @@
-import { toast, type ToastT } from 'sonner';
+import { toast } from 'sonner';
 
 type ToastType = 'default' | 'success' | 'error' | 'warning' | 'info';
 
-const TOAST_DURATION: Record<ToastType, number> = {
-  default: 1500,
-  info: 1500,
-  success: 1500,
-  warning: 2000,
-  error: 2000,
-};
-
+const TOAST_DURATION = 3000;
 const MAX_VISIBLE_TOASTS = 3;
+
 let visibleToasts = 0;
-let messageQueue: Array<{ message: string; type?: ToastType }> = [];
+let messageQueue: Array<{ message: string; type: ToastType }> = [];
 
 const showNextToast = () => {
   if (messageQueue.length === 0 || visibleToasts >= MAX_VISIBLE_TOASTS) return;
@@ -20,8 +14,8 @@ const showNextToast = () => {
   const { message, type = 'default' } = messageQueue.shift()!;
   visibleToasts++;
 
-  const toastOptions: Partial<ToastT> = {
-    duration: TOAST_DURATION[type],
+  const toastOptions = {
+    duration: TOAST_DURATION,
     onAutoClose: () => {
       visibleToasts--;
       // Process next toast after a small delay
@@ -29,13 +23,15 @@ const showNextToast = () => {
     },
   };
 
-  // Use the appropriate toast method based on type
   switch (type) {
     case 'success':
       toast.success(message, toastOptions);
       break;
     case 'error':
-      toast.error(message, toastOptions);
+      toast.error(message, {
+        ...toastOptions,
+        duration: 4000, // Keep errors visible longer
+      });
       break;
     case 'warning':
       toast.warning(message, toastOptions);
@@ -49,9 +45,13 @@ const showNextToast = () => {
 };
 
 export const showToast = (message: string, type: ToastType = 'default') => {
-  messageQueue.push({ message, type });
+  // If we haven't reached the max visible toasts, show immediately
   if (visibleToasts < MAX_VISIBLE_TOASTS) {
+    messageQueue.push({ message, type });
     showNextToast();
+  } else {
+    // Otherwise, add to queue
+    messageQueue.push({ message, type });
   }
 };
 
