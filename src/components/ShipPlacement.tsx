@@ -78,10 +78,10 @@ export const ShipPlacement = ({
   return (
     <div className="flex flex-col items-center gap-6 w-full max-w-4xl mx-auto px-4">
       <div className="text-center space-y-3 animate-in fade-in duration-500">
-        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground">⚓ Place Your Ships</h2>
+        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground">⚓ Deploy Fleet</h2>
         <p className="text-base sm:text-lg text-muted-foreground">
-          Placing: <span className="text-ocean-light font-bold text-lg sm:text-xl">{selectedShip.name}</span> 
-          <span className="text-sm sm:text-base"> (Length: {selectedShip.length})</span>
+          Deploying <span className="text-ocean-light font-bold text-lg sm:text-xl">{selectedShip.name}</span>
+          <span className="text-sm sm:text-base"> · {selectedShip.length} tiles</span>
         </p>
       </div>
 
@@ -106,29 +106,31 @@ export const ShipPlacement = ({
           <Undo className="w-4 h-4 sm:w-5 sm:h-5" />
           Undo
         </Button>
-        <Button 
-          onClick={onRandomPlacement} 
+        <Button
+          onClick={onRandomPlacement}
           variant="secondary"
           className="gap-2 hover:scale-105 transition-transform active:scale-95 shadow-md"
           size="lg"
         >
-          <span className="hidden sm:inline">🎲 Auto-place Ships</span>
+          <span className="hidden sm:inline">🎲 Auto-place</span>
           <span className="sm:hidden">🎲 Auto</span>
         </Button>
       </div>
 
-      <div className="inline-grid grid-cols-10 gap-0.5 bg-grid-border p-2 sm:p-3 rounded-xl shadow-2xl hover:shadow-glow transition-shadow duration-300">
-        {board.map((row, rowIndex) =>
-          row.map((_, colIndex) => (
-            <div
-              key={`${rowIndex}-${colIndex}`}
-              className={getCellClassName(rowIndex, colIndex)}
-              onClick={() => onCellClick(rowIndex, colIndex)}
-              role="button"
-              aria-label={`Place ship at ${rowIndex}-${colIndex}`}
-            />
-          ))
-        )}
+      <div className="w-full overflow-x-auto">
+        <div className="inline-grid grid-cols-10 gap-0.5 bg-grid-border p-2 sm:p-3 rounded-xl shadow-2xl hover:shadow-glow transition-shadow duration-300 min-w-[18rem]">
+          {board.map((row, rowIndex) =>
+            row.map((_, colIndex) => (
+              <div
+                key={`${rowIndex}-${colIndex}`}
+                className={getCellClassName(rowIndex, colIndex)}
+                onClick={() => onCellClick(rowIndex, colIndex)}
+                role="button"
+                aria-label={`Place ship at ${rowIndex}-${colIndex}`}
+              />
+            ))
+          )}
+        </div>
       </div>
 
       <div className="flex gap-2 flex-wrap justify-center max-w-2xl">
