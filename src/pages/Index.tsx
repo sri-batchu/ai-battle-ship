@@ -238,26 +238,26 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-blue-100 p-4 sm:p-8">
-      <div className="max-w-6xl mx-auto">
-        <header className="text-center mb-8 relative">
+    <div className="min-h-screen bg-gradient-to-br from-ocean-deep via-background to-ocean-deep p-4 sm:p-6 md:p-8">
+      <div className="max-w-7xl mx-auto">
+        <header className="text-center mb-6 sm:mb-8 md:mb-10 relative animate-in fade-in duration-700">
           <button 
             onClick={() => navigate('/')}
-            className="absolute left-0 top-1/2 -translate-y-1/2 p-2 rounded-full hover:bg-blue-100 transition-colors"
+            className="absolute left-0 top-1/2 -translate-y-1/2 p-2 sm:p-3 rounded-full hover:bg-ocean-primary/20 transition-all hover:scale-110 active:scale-95 shadow-md"
             aria-label="Return to home"
           >
-            <Home className="w-6 h-6 text-blue-600" />
+            <Home className="w-5 h-5 sm:w-6 sm:h-6 text-ocean-light" />
           </button>
-          <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-2">
-            <Anchor className="inline-block mr-2" />
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-3 drop-shadow-lg">
+            <Anchor className="inline-block mr-2 text-ocean-light animate-pulse" />
             AI Battleship
           </h1>
-          <p className="text-gray-600">
+          <p className="text-base sm:text-lg md:text-xl text-muted-foreground font-medium">
             {gameState.phase === 'placement' 
-              ? 'Place your ships on the grid' 
+              ? '🚢 Place your ships on the grid' 
               : gameState.phase === 'battle'
-              ? 'Battle in progress!' 
-              : 'Game Over'}
+              ? '⚔️ Battle in progress!' 
+              : '🎮 Game Over'}
           </p>
         </header>
 

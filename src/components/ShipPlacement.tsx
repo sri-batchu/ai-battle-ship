@@ -30,19 +30,23 @@ export const ShipPlacement = ({
   const selectedShip = currentShip !== null ? ships[currentShip] : null;
 
   const getCellClassName = (row: number, col: number) => {
-    const baseClasses = "w-8 h-8 sm:w-10 sm:h-10 border border-grid-border transition-all duration-200";
+    const baseClasses = "w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 border border-grid-border transition-all duration-300 flex items-center justify-center";
     const cell = board[row][col];
 
     if (cell === 'ship') {
-      return cn(baseClasses, "bg-ship shadow-ship");
+      return cn(baseClasses, "bg-ship shadow-ship hover:shadow-glow cursor-default scale-105");
     }
 
     const canPlaceShipHere = selectedShip && canPlaceShip(board, row, col, selectedShip.length, orientation);
     if (canPlaceShipHere) {
-      return cn(baseClasses, "bg-grid-cell hover:bg-primary/30 cursor-pointer hover:scale-105");
+      return cn(
+        baseClasses, 
+        "bg-grid-cell hover:bg-ocean-light/40 cursor-pointer hover:scale-110 active:scale-95",
+        "hover:shadow-lg hover:border-ocean-light animate-in fade-in duration-200"
+      );
     }
 
-    return cn(baseClasses, "bg-grid-cell cursor-not-allowed opacity-50");
+    return cn(baseClasses, "bg-grid-cell/50 cursor-not-allowed opacity-40");
   };
 
   if (selectedShip === null) {
@@ -71,54 +75,77 @@ export const ShipPlacement = ({
   }
 
   return (
-    <div className="flex flex-col items-center gap-6">
-      <div className="text-center space-y-2">
-        <h2 className="text-2xl sm:text-3xl font-bold text-foreground">Place Your Ships</h2>
-        <p className="text-muted-foreground">
-          Placing: <span className="text-primary font-semibold">{selectedShip.name}</span> (Length: {selectedShip.length})
+    <div className="flex flex-col items-center gap-6 w-full max-w-4xl mx-auto px-4">
+      <div className="text-center space-y-3 animate-in fade-in duration-500">
+        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground">⚓ Place Your Ships</h2>
+        <p className="text-base sm:text-lg text-muted-foreground">
+          Placing: <span className="text-ocean-light font-bold text-lg sm:text-xl">{selectedShip.name}</span> 
+          <span className="text-sm sm:text-base"> (Length: {selectedShip.length})</span>
         </p>
       </div>
 
-      <div className="flex gap-4">
-        <Button onClick={onOrientationToggle} variant="outline" className="gap-2">
-          <RotateCw className="w-4 h-4" />
-          {orientation === 'horizontal' ? 'Horizontal' : 'Vertical'}
+      <div className="flex flex-wrap gap-3 justify-center w-full">
+        <Button 
+          onClick={onOrientationToggle} 
+          variant="outline" 
+          className="gap-2 hover:scale-105 transition-transform active:scale-95 shadow-md"
+          size="lg"
+        >
+          <RotateCw className="w-4 h-4 sm:w-5 sm:h-5" />
+          <span className="hidden sm:inline">{orientation === 'horizontal' ? 'Horizontal' : 'Vertical'}</span>
+          <span className="sm:hidden">{orientation === 'horizontal' ? 'H' : 'V'}</span>
         </Button>
-        <Button onClick={onUndo} variant="outline" className="gap-2" disabled={currentShip === 0}>
-          <Undo className="w-4 h-4" />
+        <Button 
+          onClick={onUndo} 
+          variant="outline" 
+          className="gap-2 hover:scale-105 transition-transform active:scale-95 shadow-md" 
+          disabled={currentShip === 0}
+          size="lg"
+        >
+          <Undo className="w-4 h-4 sm:w-5 sm:h-5" />
           Undo
         </Button>
-        <Button onClick={onRandomPlacement} variant="secondary">
-          Auto-place Ships
+        <Button 
+          onClick={onRandomPlacement} 
+          variant="secondary"
+          className="gap-2 hover:scale-105 transition-transform active:scale-95 shadow-md"
+          size="lg"
+        >
+          <span className="hidden sm:inline">🎲 Auto-place Ships</span>
+          <span className="sm:hidden">🎲 Auto</span>
         </Button>
       </div>
 
-      <div className="inline-grid grid-cols-10 gap-0.5 bg-grid-border p-2 rounded-lg shadow-lg">
+      <div className="inline-grid grid-cols-10 gap-0.5 bg-grid-border p-2 sm:p-3 rounded-xl shadow-2xl hover:shadow-glow transition-shadow duration-300">
         {board.map((row, rowIndex) =>
           row.map((_, colIndex) => (
             <div
               key={`${rowIndex}-${colIndex}`}
               className={getCellClassName(rowIndex, colIndex)}
               onClick={() => onCellClick(rowIndex, colIndex)}
+              role="button"
+              aria-label={`Place ship at ${rowIndex}-${colIndex}`}
             />
           ))
         )}
       </div>
 
-      <div className="flex gap-2 flex-wrap justify-center">
+      <div className="flex gap-2 flex-wrap justify-center max-w-2xl">
         {ships.map((s, idx) => (
           <div
             key={s.name}
             className={cn(
-              "px-3 py-1 rounded-full text-sm font-medium transition-all",
+              "px-3 py-2 rounded-full text-xs sm:text-sm font-medium transition-all duration-300",
+              "hover:scale-105 shadow-md",
               s.placed
-                ? "bg-success text-success-foreground"
+                ? "bg-success text-success-foreground animate-in slide-in-from-bottom"
                 : idx === currentShip
-                ? "bg-primary text-primary-foreground"
-                : "bg-secondary text-secondary-foreground"
+                ? "bg-ocean-light text-primary-foreground ring-2 ring-ocean-light/50 ring-offset-2 ring-offset-background"
+                : "bg-secondary text-secondary-foreground opacity-70"
             )}
           >
-            {s.name}
+            {s.placed && <span className="mr-1">✓</span>}
+            {s.name} ({s.length})
           </div>
         ))}
       </div>
